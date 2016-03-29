@@ -69,7 +69,7 @@ xterm h1 h1
 <li>Now on second console of h1 type ```ping 10.0.0.4```</li>
 <li>Go to wireshark and monitor interface ```s1-eth4``` with the filter ```ip.addr==10.0.0.x``` where x is 3 and 4. You will find 10.0.0.3 packets but no 10.0.0.4 packets</li>
 <li>Stop the above capture and now do the capture on ```s1-eth3, s21-eth1, s21-eth2, s2-eth3``` with the filter ```ip.addr==10.0.0.x``` where x is 3 and 4. You will find 10.0.0.4 packets but no 10.0.0.3 packets</li>
-</ol>
+
 
 *Load Balancing Works!*
 
