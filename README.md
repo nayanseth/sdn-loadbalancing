@@ -64,3 +64,11 @@ xterm h1 h1
 <li>Now in the second console of xterm of h1, stop pinging h4. Our goal is to create congestion on the best path of h1->h3, h1->h4 and vice versa and h1 pinging h3 is enough for that</li>
 <li>Go to your Terminal and open a new tab and run the **loadbalancer.py** script</li>
 <li>Provide input arguments such as host 1, host 2 and host 2's neighbor in integer format like for example *1,4,3* where 1 is host 1, 4 is host 2 and 3 is host 2's neighbor. Look at the topology above and you will find that these hosts are nothing but h1, h4 and h3 respectively.</li>
+<li>The loadbalancer.py performs REST requests, so initially the link costs will be 0. Re-run the script few times. This may range from 1-10 times. This is because statistics need to be enabled. After enabling statistics, it takes some time to gather information. Once it starts updating the transmission rates, you will get the best path and the flows for best path will be statically pushed to all the switches in the new best route. Here the best route is for h1->h4 and vice versa</li>
+<li>To check the flows, perform a REST GET request to (http://127.0.0.1:8080/wm/core/switch/all/flow/json)
+<li>Now on second console of h1 type ```ping 10.0.0.4```</li>
+<li>Go to wireshark and monitor interface ```s1-eth4``` with the filter ```ip.addr==10.0.0.x``` where x is 3 and 4. You will find 10.0.0.3 packets but no 10.0.0.4 packets</li>
+<li>Stop the above capture and now do the capture on ```s1-eth3, s21-eth1, s21-eth2, s2-eth3``` with the filter ```ip.addr==10.0.0.x``` where x is 3 and 4. You will find 10.0.0.4 packets but no 10.0.0.3 packets</li>
+</ol>
+
+*Load Balancing Works!*
