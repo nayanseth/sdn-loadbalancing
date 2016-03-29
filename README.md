@@ -5,10 +5,10 @@
 ## System Details
 
 1. SDN Controller - [Floodlight](http://floodlight.org)
-2. Mininet
-3. iPerf
-4. Wireshark
-5. OS - Ubuntu 14.04 LTS
+2. [Mininet](http://mininet.org)
+3. [iPerf](http://iperf.com)
+4. [Wireshark](http://wireshark.org)
+5. OS - [Ubuntu 14.04 LTS](http://ubuntu.com)
 
 ## Implementation Approach
 
@@ -39,11 +39,11 @@
 
 ![alt tag](https://raw.githubusercontent.com/nayanseth/sdn-floodlight-loadbalancing/master/assets/topologies/fat-tree-topology.png)
 
-5\. Type the following command in Mininet
+5. Type the following command in Mininet
 
 ```
 xterm h1 h1
 ```
 
-6\. In first console of h1 type, ```ping 10.0.0.3```
-7\. In second console of h1 type, ```ping 10.0.0.4```
+6. In first console of h1 type, ```ping 10.0.0.3```
+7. In second console of h1 type, ```ping 10.0.0.4```
