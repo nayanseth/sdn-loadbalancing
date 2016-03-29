@@ -4,10 +4,9 @@
 
 ## System Details
 
-1. SDN Controller - [Floodlight](http://floodlight.org)
-2. [Mininet](http://mininet.org)
-3. [iPerf](http://iperf.com)
-4. [Wireshark](http://wireshark.org)
+1. SDN Controller - [Floodlight](http://www.projectfloodlight.org/floodlight/)
+2. Virtual Network Topology - [Mininet](http://mininet.org)
+3. Evaluation & Analysis - [Wireshark](http://wireshark.org), [iPerf](http://iperf.fr)
 5. OS - [Ubuntu 14.04 LTS](http://ubuntu.com)
 
 ## Implementation Approach
