@@ -21,6 +21,29 @@
 6. Based on the cost, the best path is decided and static flows are pushed into each switch in the current best path. Information such as in-port, out-port, src ip, dst ip, src mac, dst mac is fed to the flows.
 7. The program continues to update this information every minute thereby making it dynamic.
 
+##Results We Achieved
+
+| Transfer (Gbytes) |	B/W(Gbits) |
+|-------------------|------------:|
+| 20 |	17.2 |
+| 24.9 |	21.4 |
+| 19.5 |	21.1 |
+| 25 |	21.4  |
+| 25 | 21.5  |
+|**Average = 22.8 **|	**Average = 20.52**|
+*iPerf H1 to H3 Before Load Balancing*
+
+| Transfer (Gbytes) |	B/W(Gbits) |
+|-------------------|------------:|
+|25.3 |	21.7|
+|24.1 |	20.7|
+|24.5 |	21.1|
+|21.5 |	18.5|
+|19.9 | 17.1 |
+|**Average = 23.06 **|	**Average = 19.82r**|
+*iPerf H1 to H4 Before Load Balancing*
+
+
 ##How To Use It?
 
 ###Requirements
@@ -72,13 +95,3 @@ xterm h1 h1
 
 
 *Load Balancing Works!*
-
-##Results We Achieved
-
-| Transfer (Gbytes) |	B/W(Gbits) |
-|-------------------|------------:|
-| 20 |	17.2 |
-| 24.9 |	21.4 |
-| 19.5 |	21.1 |
-| 25 |	21.4  |
-| 25 | 21.5  |
