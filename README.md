@@ -21,3 +21,29 @@
 5. The flows are created depending on the minimum transmission cost of the links at the given time. 
 6. Based on the cost, the best path is decided and static flows are pushed into each switch in the current best path. Information such as in-port, out-port, src ip, dst ip, src mac, dst mac is fed to the flows.
 7. The program continues to update this information every minute thereby making it dynamic.
+
+##How To Use It?
+
+###Requirements
+
+1. Download Floodlight
+2. Install Mininet
+3. Install OpenVSwitch
+
+###Running The Program
+
+1. Remove the official Floodlight Load Balancer
+2. Run the floodlight.sh shell script
+3. Run Floodlight
+4. Run the fat tree topology i.e. topology.py using Mininet
+
+![alt tag](https://raw.githubusercontent.com/nayanseth/sdn-floodlight-loadbalancing/master/assets/topologies/fat-tree-topology.png)
+
+5. Type the following command in Mininet
+
+----
+xterm h1 h1
+----
+
+6. In first console of h1 type, [!code tag]ping 10.0.0.3
+7. In second console of h1 type, [!code tag]ping 10.0.0.4
