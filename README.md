@@ -31,6 +31,8 @@
 
 ###Running The Program
 
+*Note: We are performing load balancing between h1, h3 and h4 at the moment. The best path for both is via Switch 1 Port 4. This is the best path selected by OpenFlow protocol. Please see the topology and why is it Port 4.*
+
 1. Remove the official Floodlight Load Balancer
 2. Run the floodlight.sh shell script
 3. Run Floodlight
@@ -55,4 +57,10 @@ xterm h1 h1
 
 <li>In first console of h1 type, ```ping 10.0.0.3```</li>
 <li>In second console of h1 type, ```ping 10.0.0.4```</li>
-<li>Open Wireshark. Ensure that you open it in sudo mode to get list of all interfaces.
+<li>On Terminal open a new tab ```Ctrl + Shift + T``` and type ```sudo wireshark```</li>
+<li>In wireshark, go to Capture->Interfaces and select ```s1-eth4``` and start the capture.</li>
+<li>In filters section in wireshark type ```ip.addr==10.0.0.3``` and check if you are receiving packets for h1 -> h3. Do same thing for h1->h4. Once you see packets, you can figure that this is the best path.</li>
+<li>But to confirm it is, repeat the above two steps for ```s1-eth3``` and you will find that no packets are transmitted to this port. Only packets it will receive will be broadcast and multicast. Ignore them.</li>
+<li>Now in the second console of xterm of h1, stop pinging h4. Our goal is to create congestion on the best path of h1->h3, h1->h4 and vice versa and h1 pinging h3 is enough for that</li>
+<li>Go to your Terminal and open a new tab and run the **loadbalancer.py** script</li>
+<li>Provide input arguments such as host 1, host 2 and host 2's neighbor in integer format like for example *1,4,3* where 1 is host 1, 4 is host 2 and 3 is host 2's neighbor. Look at the topology above and you will find that these hosts are nothing but h1, h4 and h3 respectively.</li>
