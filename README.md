@@ -36,13 +36,23 @@
 3. Run Floodlight
 4. Run the fat tree topology i.e. topology.py using Mininet
 
+```
+sudo mn --custom topology.py --topo mytopo --controller=remote,ip=127.0.0.1,port=6653
+```
+
+*Note: Provide correct path to topology.py in command*
+
 ![alt tag](https://raw.githubusercontent.com/nayanseth/sdn-floodlight-loadbalancing/master/assets/topologies/fat-tree-topology.png)
 
-5. Type the following command in Mininet
+*Note: Switch ID have been added next to Switches. Numbers near the links are the port numbers. These port numbers may change when you run mininet. For us this is the port numbers. From now on all references in the code will be with respect to this topology*
+
+<ol start=5>
+<li>Type the following command in Mininet</li>
 
 ```
 xterm h1 h1
 ```
 
-6. In first console of h1 type, ```ping 10.0.0.3```
-7. In second console of h1 type, ```ping 10.0.0.4```
+<li>In first console of h1 type, ```ping 10.0.0.3```</li>
+<li>In second console of h1 type, ```ping 10.0.0.4```</li>
+<li>Open Wireshark. Ensure that you open it in sudo mode to get list of all interfaces.
