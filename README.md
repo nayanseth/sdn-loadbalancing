@@ -23,25 +23,30 @@
 
 ##Results We Achieved
 
-| Transfer (Gbytes) |	B/W(Gbits) |
-|-------------------|------------:|
-| 20 |	17.2 |
-| 24.9 |	21.4 |
-| 19.5 |	21.1 |
-| 25 |	21.4  |
-| 25 | 21.5  |
-|**Average = 22.8 **|	**Average = 20.52**|
-*iPerf H1 to H3 Before Load Balancing*
 
-| Transfer (Gbytes) |	B/W(Gbits) |
-|-------------------|------------:|
-|25.3 |	21.7|
-|24.1 |	20.7|
-|24.5 |	21.1|
-|21.5 |	18.5|
-|19.9 | 17.1 |
-|**Average = 23.06 **|	**Average = 19.82r**|
-*iPerf H1 to H4 Before Load Balancing*
+| Transfer (Gbytes) - BLB |	B/W(Gbits) - BLB  | Transfer (Gbytes) - ALB |	B/W(Gbits) - ALB |
+|-------------------|------------:|:------------------:|-----------:|
+|15.7 |	13.5|38.2 | 32.8|
+|21.9 |	18.8|27.6 | 32.3|
+|24.6 |	21.1|40.5 | 34.8|
+|22.3 |	19.1|40.8 | 35.1|
+|39.8 | 34.2 |16.5 | 14.2| 
+| **Average = 24.86** |	**Average = 21.34**|**Average = 32.72** |	**Average = 29.84**|
+
+*iPerf H1 to H3 Before Load Balancing (BLB) and After Load Balancing (ALB)*
+
+| Transfer (Gbytes) - BLB |	B/W(Gbits) - BLB  | Transfer (Gbytes) - ALB |	B/W(Gbits) - ALB |
+|-------------------|------------:|:------------------:|-----------:|
+|18.5 |	15.9|37.2 |	31.9|	
+|18.1 |	15.5|39.9 |	34.3|	
+|23.8 |	20.2|40.2 |	34.5|
+|17.8 |	15.3|40.3 |	34.6 |
+|38.4 | 32.9|18.4 | 15.8 |
+| **Average = 23.32** |	**Average = 19.96** | **Average = 35.2** |	**Average = 30.22**|
+
+
+*iPerf H1 to H4 Before Load Balancing (BLB) and After Load Balancing (ALB)*
+
 
 
 ##How To Use It?
