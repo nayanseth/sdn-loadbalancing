@@ -72,3 +72,13 @@ xterm h1 h1
 </ol>
 
 *Load Balancing Works!*
+
+##Results We Achieved
+
+| Transfer (Gbytes) |	B/W(Gbits) |
+|-------------------|------------:|
+| 20 |	17.2 |
+| 24.9 |	21.4 |
+| 19.5 |	21.1 |
+| 25 |	21.4  |
+| 25 | 21.5  |
