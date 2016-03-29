@@ -72,7 +72,6 @@
 ##How To Use It?
 
 ###Video Demo
-<br/>
 
 <a href="http://www.youtube.com/watch?v=3C1Du32FNLo" target="_blank"><img src="http://img.youtube.com/vi/3C1Du32FNLo/0.jpg" 
 alt="Video Demo" width="240" height="180" border="10" /></a>
