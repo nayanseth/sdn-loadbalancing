@@ -41,9 +41,9 @@
 
 5. Type the following command in Mininet
 
-----
+```
 xterm h1 h1
-----
+```
 
-6. In first console of h1 type, [!code tag]ping 10.0.0.3
-7. In second console of h1 type, [!code tag]ping 10.0.0.4
+6. In first console of h1 type, ```ping 10.0.0.3```
+7. In second console of h1 type, ```ping 10.0.0.4```
