@@ -1,6 +1,8 @@
 # SDN Load Balancing
 
-**Goal**: To perform load balancing on any topology using SDN Controller i.e. Floodlight.
+**Goal**: To perform load balancing on any fat tree topology using SDN Controller i.e. Floodlight.
+
+*Note: The goal is to perform load balancing but at the same time ensure that the latency is minimum. We are using dijkstra's algorithm to find multiple paths of same length which enables us to reduce the search to a small region in the fat tree topology.*
 
 ## System Details
 
