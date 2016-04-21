@@ -5,6 +5,7 @@ import json
 import unicodedata
 from subprocess import Popen, PIPE
 import time
+import networkx as nx
 from sys import exit
 
 # Method To Get REST Data In JSON Format
@@ -16,12 +17,8 @@ def getResponse(url,choice):
 		jData = json.loads(response.content)
 		if(choice=="deviceInfo"):
 			deviceInformation(jData)
-		elif(choice=="findSwitchCluster"):
-			switchCluster(jData)
 		elif(choice=="findSwitchLinks"):
 			findSwitchLinks(jData,switch[h2])
-		elif(choice=="findSwitchRoute"):
-			findSwitchRoute(jData,switchRoute)
 		elif(choice=="linkTX"):
 			linkTX(jData,portKey)
 
@@ -50,18 +47,13 @@ def deviceInformation(data):
 						switchShort = switchDPID.split(":")[7]
 						hostPorts[ip+ "::" + switchShort] = str(portNumber)
 
-# Parses JSON Data To Find Switch Connections To Switch 1
-def switchCluster(data):
-	for i in data['00:00:00:00:00:00:00:01']:
-		temp = i.encode('ascii','ignore')
-		global switchConnections
-		switchConnections.append(temp)
-
 # Finding Switch Links Of Common Switch Of H3, H4
 
 def findSwitchLinks(data,s):
 	global switchLinks
 	global linkPorts
+	global G
+
 	links=[]
 	for i in data:
 		src = i['src-switch'].encode('ascii','ignore')
@@ -72,6 +64,8 @@ def findSwitchLinks(data,s):
 
 		srcTemp = src.split(":")[7]
 		dstTemp = dst.split(":")[7]
+
+		G.add_edge(int(srcTemp,16), int(dstTemp,16))
 
 		tempSrcToDst = srcTemp + "::" + dstTemp
 		tempDstToSrc = dstTemp + "::" + srcTemp
@@ -94,17 +88,31 @@ def findSwitchLinks(data,s):
 
 # Finds The Path To A Switch
 
-def findSwitchRoute(data,s):
-	srcShortPathID = s.split(":")[7]
-	dstShortPathID = switch[h1].split(":")[7]
-	shortPathID = srcShortPathID + "::" + dstShortPathID
-	temp = []
-	for i in data:
-		temp.append(i['switch'].encode('ascii','ignore'))
+def findSwitchRoute():
+	pathKey = ""
+	nodeList = []
+	src = int(switch[h2].split(":",7)[7],16)
+	dst = int(switch[h1].split(":",7)[7],16)
+	print src
+	print dst
+	for currentPath in nx.all_shortest_paths(G, source=src, target=dst, weight=None):
+		for node in currentPath:
 
-	del temp[0]
-	del temp[len(temp)-1]
-	path[shortPathID] = temp
+			tmp = ""
+			if node < 17:
+				pathKey = pathKey + "0" + str(hex(node)).split("x",1)[1] + "::"
+				tmp = "00:00:00:00:00:00:00:0" + str(hex(node)).split("x",1)[1]
+			else:
+				pathKey = pathKey + str(hex(node)).split("x",1)[1] + "::"
+				tmp = "00:00:00:00:00:00:00:" + str(hex(node)).split("x",1)[1]
+			nodeList.append(tmp)
+
+		pathKey=pathKey.strip("::")
+		path[pathKey] = nodeList
+		pathKey = ""
+		nodeList = []
+
+	print path
 
 # Computes Link TX
 
@@ -127,7 +135,7 @@ def getLinkCost():
 		start = switch[h2]
 		src = switch[h2]
 		srcShortID = src.split(":")[7]
-		mid = path[key][0].split(":")[7]
+		mid = path[key][1].split(":")[7]
 		for link in path[key]:
 			temp = link.split(":")[7]
 
@@ -210,7 +218,8 @@ def addFlow():
 	shortestPath = min(finalLinkTX, key=finalLinkTX.get)
 	print "\n\nShortest Path: ",shortestPath
 
-	currentNode = shortestPath.split("::",1)[0]
+
+	currentNode = shortestPath.split("::",2)[0]
 	nextNode = shortestPath.split("::")[1]
 
 	# Port Computation
@@ -223,53 +232,58 @@ def addFlow():
 
 	flowCount = flowCount + 2
 
-	pathKey = shortestPath.split("::",1)[1]
-	bestPath = path[pathKey]
+
+	bestPath = path[shortestPath]
 	previousNode = currentNode
 
 	for currentNode in range(0,len(bestPath)):
-		port = linkPorts[bestPath[currentNode].split(":")[7]+"::"+previousNode]
-		inPort = port.split("::")[0]
-		outPort = ""
-		if(currentNode+1<len(bestPath) and bestPath[currentNode]==bestPath[currentNode+1]):
-			currentNode = currentNode + 1
+		if previousNode == bestPath[currentNode].split(":")[7]:
 			continue
-		elif(currentNode+1<len(bestPath)):
-			port = linkPorts[bestPath[currentNode].split(":")[7]+"::"+bestPath[currentNode+1].split(":")[7]]
-			outPort = port.split("::")[0]
-		elif(bestPath[currentNode]==bestPath[-1]):
-			outPort = str(hostPorts[h1+"::"+switch[h1].split(":")[7]])
+		else:
+			port = linkPorts[bestPath[currentNode].split(":")[7]+"::"+previousNode]
+			inPort = port.split("::")[0]
+			outPort = ""
+			if(currentNode+1<len(bestPath) and bestPath[currentNode]==bestPath[currentNode+1]):
+				currentNode = currentNode + 1
+				continue
+			elif(currentNode+1<len(bestPath)):
+				port = linkPorts[bestPath[currentNode].split(":")[7]+"::"+bestPath[currentNode+1].split(":")[7]]
+				outPort = port.split("::")[0]
+			elif(bestPath[currentNode]==bestPath[-1]):
+				outPort = str(hostPorts[h1+"::"+switch[h1].split(":")[7]])
 
-		flowRule(bestPath[currentNode].split(":")[7],flowCount,str(inPort),str(outPort),staticFlowURL)
-		flowCount = flowCount + 2
-		previousNode = bestPath[currentNode].split(":")[7]
+			flowRule(bestPath[currentNode].split(":")[7],flowCount,str(inPort),str(outPort),staticFlowURL)
+			flowCount = flowCount + 2
+			previousNode = bestPath[currentNode].split(":")[7]
 
 # Method To Perform Load Balancing
-def loadbalance(s3,s4):
-	# Perform Load Balancing Only If H3 and H4 Are Connected To Same Switch
-	if s3==s4:
+def loadbalance():
+	linkURL = "http://localhost:8080/wm/topology/links/json"
+	getResponse(linkURL,"findSwitchLinks")
 
-		# Finds The Switches To Which H3's and H4's Switch Is Connected
-		linkURL = "http://localhost:8080/wm/topology/links/json"
-		getResponse(linkURL,"findSwitchLinks")
-
-		keys = switchLinks.keys()
-
-		for i in keys:
-			for link in switchLinks[i]:
-				global path
-				global switchRoute
-				route = "http://localhost:8080/wm/topology/route/"+link+"/0/"+switch[h1]+"/0/json"
-				switchRoute = link
-				getResponse(route,"findSwitchRoute")
-
-		getLinkCost()
-		addFlow()
-	else:
-		return 0
-
+	findSwitchRoute()
+	getLinkCost()
+	addFlow()
 
 # Main
+
+# Stores H1 and H2 from user
+global h1,h2,h3
+
+h1 = ""
+h2 = ""
+
+print "Enter Host 1"
+h1 = int(input())
+print "\nEnter Host 2"
+h2 = int(input())
+print "\nEnter Host 3 (H2's Neighbour)"
+h3 = int(input())
+
+h1 = "10.0.0." + str(h1)
+h2 = "10.0.0." + str(h2)
+h3 = "10.0.0." + str(h3)
+
 
 while True:
 
@@ -279,39 +293,31 @@ while True:
 	# Mac of H3 And H4
 	deviceMAC = {}
 
-	# Store Switch 1 Connections
-	switchConnections=[]
-	# Stores Switch Links To H3 and H4's Switch
-	switchLinks = {}
-
 	# Stores Host Switch Ports
 	hostPorts = {}
 
 	# Stores Switch To Switch Path
 	path = {}
+
+	# Switch Links
+
+	switchLinks = {}
+
 	# Stores Link Ports
 	linkPorts = {}
+
 	# Stores Final Link Rates
 	finalLinkTX = {}
+
 	# Store Port Key For Finding Link Rates
 	portKey = ""
+
 	# Stores Link Cost
 	cost = 0
-
-	# Stores H1 and H2 from user
-	global h1,h2,h3
-
-	h1 = ""
-	h2 = ""
+	# Graph
+	G = nx.Graph()
 
 	try:
-
-		print "Enter Host 1"
-		h1 = str(input())
-		print "\nEnter Host 2"
-		h2 = str(input())
-		print "\nEnter Host 3 (H2's Neighbour)"
-		h3 = str(input())
 
 		# Enables Statistics Like B/W, etc
 		enableStats = "http://localhost:8080/wm/statistics/config/enable/json"
@@ -321,13 +327,9 @@ while True:
 		deviceInfo = "http://localhost:8080/wm/device/"
 		getResponse(deviceInfo,"deviceInfo")
 
-		# Calls Method To Find Switch 1 Connections
-		switch1Cluster = "http://localhost:8080/wm/topology/switchclusters/json"
-		getResponse(switch1Cluster,"findSwitchCluster")
-
 		# Load Balancing
 
-		loadbalance(switch[h3],switch[h2])
+		loadbalance()
 
 		# -------------- PRINT --------------
 
@@ -343,12 +345,6 @@ while True:
 
 		# Host Switch Ports
 		print "\nHost::Switch Ports\n\n", hostPorts
-
-		# Print Connections to Switch 1
-		print "\nSwitch 1 Connections\n\n", switchConnections
-
-		# Print H3 And H4's Switch's Links
-		print "\nH3 & H4 Switch Links\n\n", switchLinks
 
 		# Link Ports
 		print "\nLink Ports (SRC::DST - SRC PORT::DST PORT)\n\n", linkPorts
