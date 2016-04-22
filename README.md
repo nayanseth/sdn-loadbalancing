@@ -6,7 +6,7 @@
 
 ## System Details
 
-1. SDN Controller - [Floodlight](http://www.projectfloodlight.org/floodlight/)
+1. SDN Controller (v1.2) - [Floodlight](http://www.projectfloodlight.org/floodlight/)
 2. Virtual Network Topology - [Mininet](http://mininet.org)
 3. Evaluation & Analysis - [Wireshark](http://wireshark.org), [iPerf](http://iperf.fr)
 5. OS - [Ubuntu 14.04 LTS](http://ubuntu.com)
