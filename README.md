@@ -1,26 +1,26 @@
 # SDN Load Balancing
 
-**Goal**: To perform load balancing on any fat tree topology using SDN Controller i.e. Floodlight.
+**Goal**: To perform load balancing on any fat tree topology using SDN Controller i.e. Floodlight and OpenDaylight.
 
 *Note: The goal is to perform load balancing but at the same time ensure that the latency is minimum. We are using dijkstra's algorithm to find multiple paths of same length which enables us to reduce the search to a small region in the fat tree topology.*
 
 ## System Details
 
-1. SDN Controller (v1.2) - [Floodlight](http://www.projectfloodlight.org/floodlight/)
+1. SDN Controller - [Floodlight v1.2](http://www.projectfloodlight.org/floodlight/) or [OpenDaylight Beryllium SR1](http://www.opendaylight.org/)
 2. Virtual Network Topology - [Mininet](http://mininet.org)
 3. Evaluation & Analysis - [Wireshark](http://wireshark.org), [iPerf](http://iperf.fr)
 5. OS - [Ubuntu 14.04 LTS](http://ubuntu.com)
 
 ## Implementation Approach
 
-**Base**: Make use of REST APIs to collect operational information of the topology and its devices.
+**Base Idea**: Make use of REST APIs to collect operational information of the topology and its devices.
 
-1. Enable statistics collection (TX i.e. Transmission Rate, RX  i.e. Receiving Rate, etc)
+1. Enable statistics collection in case of Floodlight (TX i.e. Transmission Rate, RX  i.e. Receiving Rate, etc). This step is not applicable for OpenDaylight
 2. Find information about hosts connected such as their IP, Switch to which they are connected, MAC Addresses, Port mapping, etc
-3. Obtain path/route information from Host 1 to Host 2 i.e. the hosts between load balancing has to be performed.
-4. Find total link cost for all these paths between Host 1 and Host 2.
+3. Obtain path/route information (using Dijkstra thereby limiting search to shortest paths and only one segment of fat tree topology) from Host 1 to Host 2 i.e. the hosts between load balancing has to be performed.
+4. Find total link cost for all these paths between Host 1 and Host 2. In case of Floodlight it is the TX and RX but for OpenDaylight it gives only transmitted data. So subsequent REST requests are made to compute this. This adds latency to the application (when using OpenDaylight).
 5. The flows are created depending on the minimum transmission cost of the links at the given time. 
-6. Based on the cost, the best path is decided and static flows are pushed into each switch in the current best path. Information such as in-port, out-port, src ip, dst ip, src mac, dst mac is fed to the flows.
+6. Based on the cost, the best path is decided and static flows are pushed into each switch in the current best path. Information such as In-Port, Out-Port, Source IP, Destination IP, Source MAC, Destination MAC is fed to the flows.
 7. The program continues to update this information every minute thereby making it dynamic.
 
 ##Results We Achieved
@@ -80,11 +80,15 @@ alt="Video Demo" width="240" height="180" border="10" /></a>
 
 ###Requirements
 
-1. Download Floodlight
+1. Download Floodlight (v1.2) / OpenDaylight (Beryllium SR1)
 2. Install Mininet
 3. Install OpenVSwitch
 
-###Running The Program
+###Running The Program (OpenDaylight)
+
+Download the distribution package from [OpenDaylight](http://opendaylight.org/downloads). Next unzip the folder. In Terminal, change directory to the distribution folder and run ```./bin/karaf```. Run Mininet and perform ```pingall```. Next run the odl.py script and specify the input. Read the Floodlight instructions to get better insight on what is happening and what input to feed in.
+
+###Running The Program (Floodlight)
 
 *Note: We are performing load balancing between h1, h3 and h4 at the moment. The best path for both is via Switch 1 Port 4. This is the best path selected by OpenFlow protocol. Please see the topology and why is it Port 4.*
 
