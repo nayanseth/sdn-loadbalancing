@@ -4,6 +4,8 @@
 
 *Note: The goal is to perform load balancing but at the same time ensure that the latency is minimum. We are using dijkstra's algorithm to find multiple paths of same length which enables us to reduce the search to a small region in the fat tree topology. It is also important to note that OpenDaylight by default forwards traffic to all ports. So specific rules might need to be pushed to get a proper load balancing output. Currently the program simply finds the path with least load and forwards traffic on that path.*
 
+**Code is be a bit un-optimized, especially for the flow rules being pushed in ODL.**
+
 ## System Details
 
 1. SDN Controller - [Floodlight v1.2](http://www.projectfloodlight.org/floodlight/) or [OpenDaylight Beryllium SR1](http://www.opendaylight.org/)
