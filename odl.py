@@ -241,12 +241,12 @@ while flag:
 		print "\nAll Paths\n"
 		#for path in nx.all_simple_paths(G, source=2, target=1):
 			#print(path)
-		for path in nx.all_shortest_paths(G, source=2, target=1, weight=None):
+		for path in nx.all_shortest_paths(G, source=int(switch[h2].split(":",1)[1]), target=int(switch[h1].split(":",1)[1]), weight=None):
 			print path
 
 		# Cost Computation
 		tmp = ""
-		for currentPath in nx.all_shortest_paths(G, source=2, target=1, weight=None):
+		for currentPath in nx.all_shortest_paths(G, source=int(switch[h2].split(":",1)[1]), target=int(switch[h1].split(":",1)[1]), weight=None):
 			for node in range(0,len(currentPath)-1):
 				tmp = tmp + str(currentPath[node]) + "::"
 				key = str(currentPath[node])+ "::" + str(currentPath[node+1])
@@ -269,7 +269,7 @@ while flag:
 
 		pushFlowRules(shortestPath)
 
-		flag = False
+		time.sleep(60)
 	except KeyboardInterrupt:
 		break
 		exit
