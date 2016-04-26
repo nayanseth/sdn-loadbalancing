@@ -83,7 +83,7 @@ alt="Video Demo" width="240" height="180" border="10" /></a>
 ###Requirements
 
 1. Download Floodlight (v1.2) / OpenDaylight (Beryllium SR1)
-2. Install Mininet
+2. Install Mininet (v2.2.1)
 3. Install OpenVSwitch
 
 ###Running The Program (OpenDaylight)
