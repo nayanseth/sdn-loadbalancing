@@ -88,7 +88,11 @@ alt="Video Demo" width="240" height="180" border="10" /></a>
 
 ###Running The Program (OpenDaylight)
 
-Download the distribution package from [OpenDaylight](http://opendaylight.org/downloads). Next unzip the folder. In Terminal, change directory to the distribution folder and run ```./bin/karaf```. Run Mininet and perform ```pingall```. Next run the odl.py script and specify the input. Read the Floodlight instructions to get better insight on what is happening and what input to feed in.
+1. Download the distribution package from [OpenDaylight](http://opendaylight.org/downloads). Next unzip the folder. 
+2. In Terminal, change directory to the distribution folder and run ```./bin/karaf```. 
+3. Run Mininet ```sudo mn --custom topology.py --topo mytopo --controller=remote,ip=127.0.0.1,port=6653```
+4. Perform ```pingall``` a couple of times till no packet loss occurs. 
+5. Next run the odl.py script and specify the input. Read the Floodlight instructions to get better insight on what is happening and what input to feed in.
 
 ###Running The Program (Floodlight)
 
