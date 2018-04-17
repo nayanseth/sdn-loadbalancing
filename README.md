@@ -1,5 +1,7 @@
 # SDN Load Balancing
 
+**Note: Project is no longer being maintained**
+
 **Goal**: To perform load balancing on any fat tree topology using SDN Controller i.e. Floodlight and OpenDaylight.
 
 *Note: The goal is to perform load balancing but at the same time ensure that the latency is minimum. We are using dijkstra's algorithm to find multiple paths of same length which enables us to reduce the search to a small region in the fat tree topology. It is also important to note that OpenDaylight by default forwards traffic to all ports. So specific rules might need to be pushed to get a proper load balancing output. Currently the program simply finds the path with least load and forwards traffic on that path.*
