@@ -33,42 +33,45 @@ def topologyInformation(data):
 	global cost
 
 	for i in data["network-topology"]["topology"]:
-		for j in i["node"]:
-			# Device MAC and IP
+		
+		if "node" in i:
+			for j in i["node"]:
+				# Device MAC and IP
 
-			if "host-tracker-service:addresses" in j:
-				for k in j["host-tracker-service:addresses"]:
-					ip = k["ip"].encode('ascii','ignore')
-					mac = k["mac"].encode('ascii','ignore')
-					deviceMAC[ip] = mac
-					deviceIP[mac] = ip
+				if "host-tracker-service:addresses" in j:
+					for k in j["host-tracker-service:addresses"]:
+						ip = k["ip"].encode('ascii','ignore')
+						mac = k["mac"].encode('ascii','ignore')
+						deviceMAC[ip] = mac
+						deviceIP[mac] = ip
 
-			# Device Switch Connection and Port
+				# Device Switch Connection and Port
 
-			if "host-tracker-service:attachment-points" in j:
+				if "host-tracker-service:attachment-points" in j:
 
-				for k in j["host-tracker-service:attachment-points"]:
-					mac = k["corresponding-tp"].encode('ascii','ignore')
-					mac = mac.split(":",1)[1]
-					ip = deviceIP[mac]
-					temp = k["tp-id"].encode('ascii','ignore')
-					switchID = temp.split(":")
-					port = switchID[2]
-					hostPorts[ip] = port
-					switchID = switchID[0] + ":" + switchID[1]
-					switch[ip] = switchID
+					for k in j["host-tracker-service:attachment-points"]:
+						mac = k["corresponding-tp"].encode('ascii','ignore')
+						mac = mac.split(":",1)[1]
+						ip = deviceIP[mac]
+						temp = k["tp-id"].encode('ascii','ignore')
+						switchID = temp.split(":")
+						port = switchID[2]
+						hostPorts[ip] = port
+						switchID = switchID[0] + ":" + switchID[1]
+						switch[ip] = switchID
 
 	# Link Port Mapping
 	for i in data["network-topology"]["topology"]:
-		for j in i["link"]:
-			if "host" not in j['link-id']:
-				src = j["link-id"].encode('ascii','ignore').split(":")
-				srcPort = src[2]
-				dst = j["destination"]["dest-tp"].encode('ascii','ignore').split(":")
-				dstPort = dst[2]
-				srcToDst = src[1] + "::" + dst[1]
-				linkPorts[srcToDst] = srcPort + "::" + dstPort
-				G.add_edge((int)(src[1]),(int)(dst[1]))
+		if "link" in j:
+			for j in i["link"]:
+				if "host" not in j['link-id']:
+					src = j["link-id"].encode('ascii','ignore').split(":")
+					srcPort = src[2]
+					dst = j["destination"]["dest-tp"].encode('ascii','ignore').split(":")
+					dstPort = dst[2]
+					srcToDst = src[1] + "::" + dst[1]
+					linkPorts[srcToDst] = srcPort + "::" + dstPort
+					G.add_edge((int)(src[1]),(int)(dst[1]))
 
 def getStats(data):
 	print "\nCost Computation....\n"
