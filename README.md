@@ -1,6 +1,6 @@
 # SDN Load Balancing
 
-**Note: Project is no longer being maintained**
+## Note: Project is no longer being maintained. Have pushed a recent fix to fix the parsing issues. The script will work as long as the environment is setup correctly. The script is not at all optimized and was written to get a proof of concept.
 
 **Goal**: To perform load balancing on any fat tree topology using SDN Controller i.e. Floodlight and OpenDaylight.
 
