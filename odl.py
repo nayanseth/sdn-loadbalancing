@@ -62,7 +62,7 @@ def topologyInformation(data):
 
 	# Link Port Mapping
 	for i in data["network-topology"]["topology"]:
-		if "link" in j:
+		if "link" in i:
 			for j in i["link"]:
 				if "host" not in j['link-id']:
 					src = j["link-id"].encode('ascii','ignore').split(":")
